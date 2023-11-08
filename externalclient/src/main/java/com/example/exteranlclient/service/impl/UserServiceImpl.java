@@ -13,14 +13,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static AtomicInteger count = new AtomicInteger(0);
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     @Override
     public UserDto getInfoByLogin(String login) {
-        count.getAndIncrement();
-        if(count.get()<3) throw new RuntimeException();
-        count.set(0);
         User byLogin = userRepository.findUserByLogin(login);
         return userMapper.toUserDto(byLogin);
     }

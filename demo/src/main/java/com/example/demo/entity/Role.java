@@ -15,8 +15,8 @@ import javax.persistence.Table;
 @NoArgsConstructor
 public class Role {
     @Id
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
 }

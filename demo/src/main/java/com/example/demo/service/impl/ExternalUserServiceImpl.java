@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class ExternalUserServiceImpl implements ExternalUserService {
     @Lazy
     @Autowired
     private ExternalUserService externalUserService;
+
     @Async
     //желательно добавить Circuit breaker, чтобы не было деградации,
     // если внешний клиент не доступен длительное время.
@@ -39,6 +41,8 @@ public class ExternalUserServiceImpl implements ExternalUserService {
         UserInfo actualUserInfo = retryTemplate.execute(context -> {
             log.trace("Calling externalUserService {} for {}", serviceUrl, login);
             return userServiceClient.getForObject(serviceUrl, UserInfo.class);
+        }, context -> {
+            throw new RestClientException(String.format("Unable get actual user info for %s. Service %s is unavailable", login, serviceUrl));
         });
         log.info("Actual user info received: {}", actualUserInfo);
         return CompletableFuture.completedFuture(actualUserInfo);

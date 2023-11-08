@@ -22,7 +22,7 @@ public class UserController {
     public ResponseEntity<Void> updateOldUsersInDepartment(@RequestParam Long departmentId){
         log.debug("Entering update old users in departmnet endpoint");
         externalUserService.updateOldUsersInDepartment(departmentId);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/admins/more10activeInDprtm")
